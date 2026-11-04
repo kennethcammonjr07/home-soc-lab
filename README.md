@@ -73,4 +73,18 @@ flowchart LR
 - **Docker bypasses host firewalls.** Published container ports skip UFW, so I avoided publishing the log database and bound the dashboard to the LAN.
 - **IPv6 changes exposure.** Unlike IPv4 behind NAT, the Pi received its own public IPv6 address, which made the firewall essential.
 - **Secrets leak easily.** I exposed a bot token in a screenshot and rotated it immediately; I also learned honeypots record any password typed into them, including your own.
+## Repository Layout
 
+- `docker-compose.yml` — Cowrie, Loki, Alloy, and Grafana containers
+- `alloy/config.alloy` — log collection config
+- `suricata/local.rules` — my custom detection rules
+- `suricata/threshold.config` — alert tuning (suppressions)
+- `docs/tuning-log.md` — tuning decisions and reasoning
+- `docs/mitre-mapping.md` — MITRE ATT&CK mapping
+- `docs/screenshots/` — dashboard and alert screenshots
+
+## Known Limitations
+
+- Suricata sees traffic to and from the Pi itself (including all honeypot traffic), not every device on the network — full visibility would need a switch with port mirroring
+- Suricata's `HOME_NET` covers IPv4 only
+- Pi-hole protects only devices manually pointed at it (my ISP's router doesn't allow changing network-wide DNS)
