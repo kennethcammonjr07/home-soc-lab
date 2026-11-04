@@ -74,4 +74,3 @@ flowchart LR
 - **IPv6 changes exposure.** Unlike IPv4 behind NAT, the Pi received its own public IPv6 address, which made the firewall essential.
 - **Secrets leak easily.** I exposed a bot token in a screenshot and rotated it immediately; I also learned honeypots record any password typed into them, including your own.
 
-## Repository Layout
