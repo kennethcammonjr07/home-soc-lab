@@ -1,0 +1,7 @@
+# Secrets — never upload
+.env
+
+# Raw logs and analysis files
+analysis-logs/
+*.json.log
+all.json

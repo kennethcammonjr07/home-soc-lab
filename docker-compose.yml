@@ -1,0 +1,55 @@
+services:
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: cowrie
+    restart: unless-stopped
+    ports:
+      - "2222:2222"
+    volumes:
+      - cowrie-var:/cowrie/cowrie-git/var
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki-data:/loki
+
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    restart: unless-stopped
+    command: run --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - /var/log/suricata:/host/suricata:ro
+      - /var/log/pihole:/host/pihole:ro
+      - cowrie-var:/host/cowrie:ro
+      - alloy-data:/var/lib/alloy/data
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "192.168.1.167:3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_SERVER_ROOT_URL=http://192.168.1.167:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - loki
+
+volumes:
+  cowrie-var:
+  loki-data:
+  alloy-data:
+  grafana-data:

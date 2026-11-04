@@ -1,0 +1,2 @@
+alert dns $HOME_NET any -> any any (msg:"LOCAL DNS lookup of watchlisted domain"; dns.query; content:"evil-test.example"; nocase; sid:1000001; rev:1;)
+alert tcp any any -> $HOME_NET 2222 (msg:"LOCAL Possible SSH brute force against honeypot"; flow:to_server; flags:S; threshold:type both, track by_src, count 10, seconds 60; sid:1000002; rev:1;)
